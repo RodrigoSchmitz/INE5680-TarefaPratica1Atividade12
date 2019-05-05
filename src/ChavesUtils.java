@@ -1,15 +1,41 @@
-import java.util.Random;
+import org.apache.commons.codec.binary.Hex;
+
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class ChavesUtils {
 
-    public String gerarChaveAleatoria(){
-        char[] chars = "QWERTYUIOPASDFGHJKLZXCVBNMabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*".toCharArray();
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 25; i++) {
-            char c = chars[random.nextInt(chars.length)];
-            sb.append(c);
+    /**
+     * Gerar chave derivada da senha
+     * @param key
+     * @param salt
+     * @param iterations
+     * @return
+     */
+    public static String generateDerivedKey(
+            String key, String salt, Integer iterations) {
+        PBEKeySpec spec = new PBEKeySpec(key.toCharArray(), salt.getBytes(), iterations, 128);
+        SecretKeyFactory pbkdf2 = null;
+        String derivedPass = null;
+        try {
+            pbkdf2 = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
+            SecretKey sk = pbkdf2.generateSecret(spec);
+            derivedPass = Hex.encodeHexString(sk.getEncoded());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return sb.toString();
+        return derivedPass;
+    }
+
+    /*Usado para gerar o salt  */
+    public String getSalt() throws NoSuchAlgorithmException {
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+        //SecureRandom sr = new SecureRandom();
+        byte[] salt = new byte[16];
+        sr.nextBytes(salt);
+        return Hex.encodeHexString(salt);
     }
 }
