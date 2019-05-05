@@ -8,17 +8,9 @@ import java.security.SecureRandom;
 
 public class ChavesUtils {
 
-    /**
-     * Gerar chave derivada da senha
-     * @param key
-     * @param salt
-     * @param iterations
-     * @return
-     */
-    public static String generateDerivedKey(
-            String key, String salt, Integer iterations) {
+    public static String generateDerivedKey(String key, String salt, Integer iterations) {
         PBEKeySpec spec = new PBEKeySpec(key.toCharArray(), salt.getBytes(), iterations, 128);
-        SecretKeyFactory pbkdf2 = null;
+        SecretKeyFactory pbkdf2;
         String derivedPass = null;
         try {
             pbkdf2 = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
@@ -31,7 +23,7 @@ public class ChavesUtils {
     }
 
     /*Usado para gerar o salt  */
-    public String getSalt() throws NoSuchAlgorithmException {
+    public static String getSalt() throws NoSuchAlgorithmException {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         //SecureRandom sr = new SecureRandom();
         byte[] salt = new byte[16];
