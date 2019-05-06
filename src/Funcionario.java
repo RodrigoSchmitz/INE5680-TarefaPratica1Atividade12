@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.Scanner;
 
 public class Funcionario {
 
@@ -40,7 +41,10 @@ public class Funcionario {
         in.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(new byte[16]));
 
         //Criptografa mensagem
-        String mensagem = "Essa eh uma mensagem da dona Alice para o senhor Bob, eh noix";
+        System.out.println("Digite a mensagem: ");
+        Scanner sc = new Scanner(System.in);
+        String mensagem = sc.nextLine();
+
         byte[] input = mensagem.getBytes(StandardCharsets.UTF_8);
         byte[] msgCriptografada = in.doFinal(input);
         System.out.println("Mensagem = " + mensagem);
